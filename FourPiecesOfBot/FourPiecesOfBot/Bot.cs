@@ -51,23 +51,30 @@ namespace FourPiecesOfBot
 
                 Console.WriteLine("Connected");
             }
-            catch (SocketException se)
+            catch
             {
-                Console.WriteLine(se.SocketErrorCode);
+                Console.WriteLine("Error: Unable to connect");
             }
         }
 
         private void SendMsg(string command, string args)
         {
-            if(args == null)
+            try
             {
-                writer.WriteLine(command);
-                writer.Flush();
+                if (args == null)
+                {
+                    writer.WriteLine(command);
+                    writer.Flush();
+                }
+                else
+                {
+                    writer.WriteLine(command + " " + args);
+                    writer.Flush();
+                }
             }
-            else
+            catch
             {
-                writer.WriteLine(command + " " + args);
-                writer.Flush();
+                Console.WriteLine("Error: Unable to send data to writer");
             }
         }
 
@@ -80,22 +87,14 @@ namespace FourPiecesOfBot
                 try
                 {
                     data = reader.ReadLine();
-                }
-                catch
-                {
-                    Console.WriteLine("Unable to read from server");
-                    return;
-                }
 
-                Message message = new Message(data);
+                    Message message = new Message(data);
 
-                //respond to pings appropriately
-                if (message.CheckPing())
-                    this.SendMsg("PONG", message.GetContent(1));
-
-                //if the message is longer than 3 words, it's probably a command
-                if (message.GetLength() > 3)
-                {
+                    //respond to pings appropriately
+                    if (message.CheckPing())
+                        this.SendMsg("PONG", message.GetContent(1));
+                        
+                    
                     string command = message.GetContent(3);
 
                     switch (command)
@@ -112,7 +111,15 @@ namespace FourPiecesOfBot
                             running = false;
                             this.CloseConnection();
                             break;
+                        case (null):
+                            break;
                     }
+                }
+
+                catch
+                {
+                    Console.WriteLine("Unable to read from server");
+                    return;
                 }
                 //sleep for 2 seconds to prevent bot abuse
                 System.Threading.Thread.Sleep(2000);
