@@ -9,12 +9,29 @@ namespace FourPiecesOfBot
     class Message
     {
         public static readonly char[] separator = { ' ' };
-        private string[] extractedData;
-
+        private string[] extractedData = new string[5];
+        
         public Message(string data)
         {
             Console.WriteLine(data);
-            extractedData = data.Split(separator);
+            string[] tempData = data.Split(separator);
+            this.ParseMessage(tempData);
+        }
+
+        private void ParseMessage(string[] tempData)
+        {
+            string result = null;
+            for(int i=0; i<4; i++)
+            {
+                if (i >= tempData.Length)
+                    break;
+                extractedData[i] = tempData[i];
+            }
+            for(int i = 4; i < tempData.Length; i++)
+            {
+                result = result + tempData[i] + ' ';
+            }
+            extractedData[4] = result;
         }
 
         public string GetContent(int index)

@@ -96,18 +96,19 @@ namespace FourPiecesOfBot
                     switch (command)
                     {
                         case (":!dogs"):
-                            this.SendMsg("PRIVMSG", message.GetContent(2) + " FrankerZ OhMyDog RalpherZ");
+                            this.SendMsg("PRIVMSG", message.GetContent(2) + " :FrankerZ OhMyDog RalpherZ");
                             break;
                         case (":!say"):
-                            this.SendMsg("PRIVMSG", message.GetContent(2) + " " + message.GetContent(4));
+                            this.SendMsg("PRIVMSG", message.GetContent(2) + " :" + message.GetContent(4));
                             break;
                         case (":!quit"):
-                            this.SendMsg("QUIT", null);
+                            this.SendMsg("QUIT", message.GetContent(4));
                             running = false;
                             this.CloseConnection();
                             break;
                     }
                 }
+                System.Threading.Thread.Sleep(2000);
             }
         }
 
