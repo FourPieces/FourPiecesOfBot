@@ -14,6 +14,7 @@ namespace FourPiecesOfBot
             string password = null;
             try
             {
+                //read the password from the specified file in the directory
                 password = File.ReadAllText(@"c:\botdata\oauth.txt", Encoding.UTF8);
             }
             catch (IOException ex)

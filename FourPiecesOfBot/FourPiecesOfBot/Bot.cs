@@ -34,11 +34,14 @@ namespace FourPiecesOfBot
         {
             try
             {
+                //set up all the fun socket things
                 connection = new TcpClient(Config.server, Config.port);
 
                 stream = connection.GetStream();
                 reader = new StreamReader(stream);
                 writer = new StreamWriter(stream);
+
+                //send the nick and password, then join all the channels it's supposed to be in
                 this.SendMsg("PASS", botConfig.pass);
                 this.SendMsg("NICK", botConfig.nick);
                 for(int i=0; i<botConfig.channels.Length; i++)
@@ -86,15 +89,18 @@ namespace FourPiecesOfBot
 
                 Message message = new Message(data);
 
+                //respond to pings appropriately
                 if (message.CheckPing())
                     this.SendMsg("PONG", message.GetContent(1));
 
+                //if the message is longer than 3 words, it's probably a command
                 if (message.GetLength() > 3)
                 {
                     string command = message.GetContent(3);
 
                     switch (command)
                     {
+                        //good dogs bark bark bark
                         case (":!dogs"):
                             this.SendMsg("PRIVMSG", message.GetContent(2) + " :FrankerZ OhMyDog RalpherZ");
                             break;
@@ -108,10 +114,12 @@ namespace FourPiecesOfBot
                             break;
                     }
                 }
+                //sleep for 2 seconds to prevent bot abuse
                 System.Threading.Thread.Sleep(2000);
             }
         }
 
+        //close all the threads when you exit
         void CloseConnection()
         {
             if (reader != null)
